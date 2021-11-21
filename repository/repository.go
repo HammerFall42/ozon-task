@@ -1,5 +1,7 @@
 package repository
 
+import "github.com/spf13/viper"
+
 type UrlManager interface {
 	AddNewUrl(url string) (string, error)
 	GetUrl(shortened string) (string, error)
@@ -9,16 +11,16 @@ type Repo struct {
 	rep UrlManager
 }
 
-func InitRepo(mode byte, path string) (Repo, error) {
+func InitRepo(mode byte) (Repo, error) {
 	var r Repo
 	if mode == 'd' {
 		db, err := NewPostgresCon(Config{
-			Host:     "localhost",
-			Port:     "5432",
-			Username: "postgres",
-			DBName:   "postgres",
-			SSLMode:  "disable",
-			Password: "postgrepass",
+			Host:     viper.GetString("db.host"),
+			Port:     viper.GetString("db.port"),
+			Username: viper.GetString("db.username"),
+			DBName:   viper.GetString("db.dbname"),
+			SSLMode:  viper.GetString("db.sslmode"),
+			Password: viper.GetString("db.password"),
 		})
 		if err == nil {
 			r.rep = NewDbRepo(db)

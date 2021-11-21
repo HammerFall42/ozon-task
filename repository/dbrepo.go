@@ -30,8 +30,7 @@ func NewPostgresCon(cfg Config) (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	err = db.Ping()
-	if err != nil {
+	if err = db.Ping(); err != nil {
 		return nil, err
 	}
 
@@ -40,15 +39,13 @@ func NewPostgresCon(cfg Config) (*sqlx.DB, error) {
 
 func (r *DbRepo) AddNewUrl(url string) (string, error) {
 	var shortenedUrl string
-	query := fmt.Sprintf(`SELECT ID FROM %s WHERE url = '%s'`, tableName, url)
-	row := r.db.QueryRow(query)
-	err := row.Scan(&shortenedUrl)
-	if err == sql.ErrNoRows {
-		r.currentId, err = IncCurId(r.currentId, r.alphabet)
-		if err == nil {
+	query := fmt.Sprintf(`SELECT ID FROM %s WHERE url = $1`, tableName)
+	row := r.db.QueryRow(query, url)
+	if err := row.Scan(&shortenedUrl); err == sql.ErrNoRows {
+		if r.currentId, err = IncCurId(r.currentId, r.alphabet); err == nil {
 			shortenedUrl = string(r.currentId)
-			query = fmt.Sprintf(`INSERT INTO %s VALUES ('%s', '%s')`, tableName, shortenedUrl, url)
-			row = r.db.QueryRow(query)
+			query = fmt.Sprintf(`INSERT INTO %s VALUES ($1, $2)`, tableName)
+			r.db.QueryRow(query, shortenedUrl, url)
 			return shortenedUrl, nil
 		} else {
 			return "", err
@@ -62,8 +59,7 @@ func (r DbRepo) GetUrl(shortened string) (string, error) {
 	var url string
 	query := fmt.Sprintf(`SELECT url FROM %s WHERE ID = '%s'`, tableName, shortened)
 	row := r.db.QueryRow(query)
-	err := row.Scan(&url)
-	if err == sql.ErrNoRows {
+	if err := row.Scan(&url); err == sql.ErrNoRows {
 		return "", errors.New("there's no url with such shortened version")
 	}
 

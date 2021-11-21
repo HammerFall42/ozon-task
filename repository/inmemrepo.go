@@ -29,8 +29,7 @@ func (r *InMemRepo) AddNewUrl(url string) (string, error) {
 	}
 
 	var err error
-	r.currentId, err = IncCurId(r.currentId, r.alphabet)
-	if err == nil {
+	if r.currentId, err = IncCurId(r.currentId, r.alphabet); err == nil {
 		shortenedUrl := string(r.currentId)
 		r.mp[shortenedUrl] = url
 		return shortenedUrl, nil

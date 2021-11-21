@@ -1,13 +1,21 @@
 package app
 
 import (
-	"../handler"
-	"../repository"
+	"ozon-task/handler"
+	"ozon-task/repository"
+
 	"github.com/labstack/echo"
+	"github.com/spf13/viper"
 )
 
-func Run(mode byte, path string) error {
-	r, err := repository.InitRepo(mode, path)
+func Run(mode byte) error {
+	viper.AddConfigPath("./")
+	viper.SetConfigName("config")
+	if err := viper.ReadInConfig(); err != nil {
+		return err
+	}
+
+	r, err := repository.InitRepo(mode)
 	if err != nil {
 		return err
 	}
@@ -17,7 +25,7 @@ func Run(mode byte, path string) error {
 	h := handler.NewHandler(r)
 	h.InitHandler(group)
 
-	if err := router.Start("localhost:9000"); err != nil {
+	if err := router.Start("localhost" + viper.GetString("port")); err != nil {
 		return err
 	}
 

@@ -3,7 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"../repository"
+	"ozon-task/repository"
+
 	"github.com/labstack/echo"
 )
 
@@ -40,7 +41,7 @@ func (h *Handler) AddUrl(ctx echo.Context) error {
 	shortened, err := h.repo.CallAddNewUrl(input.Url)
 
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err)
+		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]string{"shortened": shortened})
@@ -55,7 +56,7 @@ func (h *Handler) GetUrl(ctx echo.Context) error {
 	url, err := h.repo.CallGetUrl(input.Shortened)
 
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err)
+		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]string{"url": url})
