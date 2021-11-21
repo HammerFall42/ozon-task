@@ -1,4 +1,4 @@
-module ozon-task
+module github.com/HammerFall42/ozon-task
 
 go 1.17
 
