@@ -53,6 +53,7 @@ paths:
 
 Пример для Postman:
 
+```
 GET localhost:8080/api/v1/url
 Headers: Postman-Token, Content-Type, Host, User-Agent, Accept, Accept-Encoding, Connection
 Body: raw JSON
@@ -66,6 +67,7 @@ Body: raw JSON
 {
   "url" : "https://docs.google.com/document/d/1PYRU5vLqdktzkldlO0VZS-IZfoPL6yJinJTWcDLkWU0/edit"
 }
+```
 
 ## База данных
 
