@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
-	"ozon-task/repository"
+	"github.com/HammerFall42/ozon-task/repository"
 
 	"github.com/labstack/echo"
 )
@@ -27,8 +28,8 @@ func NewHandler(r repository.Repo) *Handler {
 func (h *Handler) InitHandler(api *echo.Group) {
 	v1 := api.Group("/v1")
 	{
-		v1.POST("/add-url", h.AddUrl)
-		v1.GET("/get-url", h.GetUrl)
+		v1.POST("/url", h.AddUrl)
+		v1.GET("/url", h.GetUrl)
 	}
 }
 
@@ -41,8 +42,11 @@ func (h *Handler) AddUrl(ctx echo.Context) error {
 	shortened, err := h.repo.CallAddNewUrl(input.Url)
 
 	if err != nil {
+		log.Println("failed to add new url")
 		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
+
+	log.Println("new url added")
 
 	return ctx.JSON(http.StatusOK, map[string]string{"shortened": shortened})
 }
@@ -56,8 +60,11 @@ func (h *Handler) GetUrl(ctx echo.Context) error {
 	url, err := h.repo.CallGetUrl(input.Shortened)
 
 	if err != nil {
+		log.Println("failed to get url")
 		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
+
+	log.Println("url found")
 
 	return ctx.JSON(http.StatusOK, map[string]string{"url": url})
 }

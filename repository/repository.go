@@ -1,6 +1,10 @@
 package repository
 
-import "github.com/spf13/viper"
+import (
+	"errors"
+	"github.com/spf13/viper"
+	"log"
+)
 
 type UrlManager interface {
 	AddNewUrl(url string) (string, error)
@@ -24,11 +28,15 @@ func InitRepo(mode byte) (Repo, error) {
 		})
 		if err == nil {
 			r.rep = NewDbRepo(db)
+			log.Println("database initialized")
 		} else {
 			return r, err
 		}
 	} else if mode == 'i' {
 		r.rep = NewInMemRepo()
+		log.Println("in-memory repository initialized")
+	} else {
+		return r, errors.New("unknown parameter")
 	}
 
 	return r, nil

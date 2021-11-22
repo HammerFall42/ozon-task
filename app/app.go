@@ -1,8 +1,8 @@
 package app
 
 import (
-	"ozon-task/handler"
-	"ozon-task/repository"
+	"github.com/HammerFall42/ozon-task/handler"
+	"github.com/HammerFall42/ozon-task/repository"
 
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"
@@ -25,7 +25,7 @@ func Run(mode byte) error {
 	h := handler.NewHandler(r)
 	h.InitHandler(group)
 
-	if err := router.Start("localhost" + viper.GetString("port")); err != nil {
+	if err := router.Start("0.0.0.0" + viper.GetString("port")); err != nil {
 		return err
 	}
 

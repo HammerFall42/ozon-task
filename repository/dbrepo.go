@@ -29,6 +29,12 @@ func NewPostgresCon(cfg Config) (*sqlx.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	if _, err = db.Exec(`DROP TABLE IF EXISTS shortened_urls`); err != nil {
+		return nil, err
+	}
+	if _, err = db.Exec(`CREATE TABLE shortened_urls( ID varchar(10), URL varchar );`); err != nil {
+		return nil, err
+	}
 
 	if err = db.Ping(); err != nil {
 		return nil, err
@@ -57,8 +63,8 @@ func (r *DbRepo) AddNewUrl(url string) (string, error) {
 
 func (r DbRepo) GetUrl(shortened string) (string, error) {
 	var url string
-	query := fmt.Sprintf(`SELECT url FROM %s WHERE ID = '%s'`, tableName, shortened)
-	row := r.db.QueryRow(query)
+	query := fmt.Sprintf(`SELECT url FROM %s WHERE ID = $1`, tableName)
+	row := r.db.QueryRow(query, shortened)
 	if err := row.Scan(&url); err == sql.ErrNoRows {
 		return "", errors.New("there's no url with such shortened version")
 	}
