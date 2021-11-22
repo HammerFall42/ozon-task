@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - data:/var/lib/postgresql/data
-  server_in_mem:
+  server_in_db:
     build:
       context: .
       dockerfile: Dockerfile
@@ -26,8 +26,8 @@ services:
     ports:
       - "8080:8080"
     command:
-      - "i"
-  server_in_db:
+      - "d"
+  server_in_mem:
     build:
       context: .
       dockerfile: Dockerfile
@@ -36,6 +36,6 @@ services:
     ports:
       - "8080:8080"
     command:
-      - "d"
+      - "i"
 volumes:
   data:
